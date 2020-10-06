@@ -3,6 +3,6 @@ Easily convert enmaps to josh's and back.
 ## Usage
 Simply run 
 ```bash
-npm enjosh
+npx enjosh
 ```
 EnJosh will walk you through the process.

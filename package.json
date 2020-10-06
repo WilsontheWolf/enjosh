@@ -4,6 +4,7 @@
   "description": "Easily convert enmaps to josh's and back.",
   "main": "index.js",
   "author": "WilsontheWolf",
+  "repository": "https://github.com/WilsontheWolf/enjosh",
   "license": "MIT",
   "dependencies": {
     "@josh-providers/sqlite": "^1.0.16",
