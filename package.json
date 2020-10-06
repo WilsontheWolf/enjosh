@@ -5,6 +5,7 @@
   "main": "index.js",
   "author": "WilsontheWolf",
   "repository": "https://github.com/WilsontheWolf/enjosh",
+  "bugs": "https://github.com/WilsontheWolf/enjosh/issues",
   "license": "MIT",
   "dependencies": {
     "@josh-providers/sqlite": "^1.0.16",
