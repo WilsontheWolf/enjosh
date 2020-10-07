@@ -100,7 +100,6 @@ const initializers = {
             when: (a) => !a.sameName
         },
     ]);
-    console.log(answers);
     let { action, firstPath, secondPath, samePath, firstName, secondName, sameName, firstPathAddData, secondPathAddData } = answers;
     if (firstPathAddData) firstPath = join(firstPath, 'data');
     if (samePath) secondPath = firstPath;
