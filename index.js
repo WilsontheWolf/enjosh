@@ -1,9 +1,13 @@
+#!/usr/bin/env node
 const { prompt, registerPrompt } = require('inquirer');
 registerPrompt('directory', require('inquirer-select-directory'));
 const { parse, join } = require('path');
+const Enmap = require('enmap');
+const Josh = require('josh');
+const provider = require('@josh-providers/sqlite');
+
 const initializers = {
     enmap: (name, dataDir) => {
-        const Enmap = require('enmap');
         let db = new Enmap({
             name,
             dataDir
@@ -11,11 +15,9 @@ const initializers = {
         return db;
     },
     josh: (name, dataDir) => {
-        const Josh = require('josh');
-        const provider = require('@josh-providers/sqlite');
         let db = new Josh({
-            name,
-            providerOptions: { dataDir },
+            name, // testing 
+            providerOptions: { dataDir }, // /home/shorty/projects/enmap-test/data
             provider
         });
         return db;
@@ -104,19 +106,43 @@ const initializers = {
     if (samePath) secondPath = firstPath;
     if (secondPathAddData) secondPath = join(secondPath, 'data');
     if (sameName) secondName = firstName;
-    let oldDB = initializers[action[0]](firstName, firstPath);
-    let newDB = initializers[action[1]](secondName, secondPath);
-    await oldDB.defer;
-    await newDB.defer;
-    if (await newDB.size) {
-        if (!(await prompt([{ type: 'confirm', name: 'continue', message: `The ${action[1]} has ${await newDB.size} key(s). Continuing might lose data.\nAre you sure you want to continue?` }])).continue) return console.log('Canceled');
+    try {
+        let oldDB = initializers[action[0]](firstName, firstPath);
+        let newDB = initializers[action[1]](secondName, secondPath);
+        if (action[0] === 'enmap')
+            await oldDB.defer;
+        if (action[1] === 'enmap')
+            await newDB.defer;
+        if (await newDB.size) {
+            if (!(await prompt([{ type: 'confirm', name: 'continue', message: `The ${action[1]} has ${await newDB.size} key(s). Continuing might lose data.\nAre you sure you want to continue?` }])).continue) return console.log('Canceled');
+        }
+        console.log(`Moving ${await oldDB.size} entries from ${action[0]} to ${action[1]}.\nPlease wait...`);
+        await newDB.import(await oldDB.export());
+        console.log(`Done!
+Your ${action[1]} now has ${await newDB.size} row.`);
+        if (action[0] === 'enmap')
+            await oldDB.close();
+        else
+            oldDB.provider.close();
+        if (action[1] == 'enmap')
+            await newDB.close();
+        else
+            newDB.provider.close();
+    } catch (e) {
+        console.error('There was an error performing the action!',
+            '\nPlease report the info below to https://github.com/WilsontheWolf/enjosh/issues !',
+            '\nError:',
+            e,
+            '\nData:',
+            '\naction:', action,
+            '\nfirstPath:', firstPath,
+            '\nsecondPath:', secondPath,
+            '\nsamePath:', samePath,
+            '\nfirstName:', firstName,
+            '\nsecondName:', secondName,
+            '\nsameName:', sameName,
+            '\nfirstPathAddData:', firstPathAddData,
+            '\nsecondPathAddData:', secondPathAddData,
+        );
     }
-    console.log(`Moving ${await oldDB.size} entries from ${action[0]} to ${action[1]}.\nPlease wait...`);
-    await newDB.import(await oldDB.export());
-    console.log(`Done!
-${action[1]} now has ${await newDB.size}`);
-    if (action[0] == 'enmap')
-        await newDB.close();
-    if (action[1] == 'enmap')
-        await oldDB.close();
 })();

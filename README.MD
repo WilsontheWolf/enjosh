@@ -1,11 +1,20 @@
 # EnJosh
 Easily convert enmaps to josh's and back.
-### Note
-This might not work due to an issue with Enmap. It's not totally reproducable so I'm publishing now,
-and will fix if a patch comes out. Sorry.
 ## Usage
-Simply run 
+### Using npx
+To run using npx put the following in a prompt.
 ```bash
 npx enjosh
+```
+### Installing globally
+To install globally run 
+```bash
+npm install enjosh -g
+# or 
+yarn global add enjosh
+```
+Then to run after this use 
+```bash
+enjosh
 ```
 EnJosh will walk you through the process.
