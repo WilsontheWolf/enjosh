@@ -18,3 +18,5 @@ Then to run after this use
 enjosh
 ```
 EnJosh will walk you through the process.
+
+![gif](https://cdn.discordapp.com/attachments/606876870063030273/763225686533603328/enjosh.gif)
