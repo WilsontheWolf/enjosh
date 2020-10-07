@@ -8,13 +8,7 @@ const initializers = {
             name,
             dataDir
         });
-        return {
-            size: db.count,
-            defer: db.defer,
-            export: db.export,
-            import: db.import,
-            close: db.close
-        };
+        return db;
     },
     josh: (name, dataDir) => {
         const Josh = require('josh');
@@ -24,13 +18,7 @@ const initializers = {
             providerOptions: { dataDir },
             provider
         });
-        return {
-            size: db.size,
-            defer: db.defer,
-            export: db.export,
-            import: db.import,
-            close: db.close
-        };
+        return db;
     }
 };
 (async () => {
@@ -127,6 +115,8 @@ const initializers = {
     await newDB.import(await oldDB.export());
     console.log(`Done!
 ${action[1]} now has ${await newDB.size}`);
-    await newDB.close();
-    await oldDB.close();
+    if (action[0] == 'enmap')
+        await newDB.close();
+    if (action[1] == 'enmap')
+        await oldDB.close();
 })();
